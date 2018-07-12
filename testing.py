@@ -1,5 +1,5 @@
 from convNet import create_placeholders, initialize_parameters, forward_propagation, compute_cost, model
-from utils import get_images_minibatch, get_labels_minibatch
+from utils import get_images_as_tensor, get_labels_as_tensor, shuffle_Y_and_X_synchronous
 import tensorflow as tf
 import numpy as np
 
@@ -19,9 +19,6 @@ def test_initialize_parameters():
 		sess_test.run(init)
 		print("W1 = " + str(parameters["W1"].eval()[1,1,1]))
 		print("W2 = " + str(parameters["W2"].eval()[1,1,1]))
-		print("W3 = " + str(parameters["W3"].eval()[1,1,1]))
-		print("W4 = " + str(parameters["W4"].eval()[1,1,1]))
-		print("W5 = " + str(parameters["W5"].eval()[1,1,1]))
 
 #test_initialize_parameters()
 
@@ -32,8 +29,8 @@ def test_forward_propagation():
 		Z5 = forward_propagation(X, parameters)
 		init = tf.global_variables_initializer()
 		sess_test.run(init)
-		a = sess_test.run(Z5, {X: np.random.randn(5,128,128,3), Y: np.random.rand(5,30)})
-		print("Z5 = " + str(a))
+		a = sess_test.run(Z3, {X: np.random.randn(5,128,128,3), Y: np.random.rand(5,30)})
+		print("Z3 = " + str(a))
 
 #test_forward_propagation()
 
@@ -51,7 +48,20 @@ def test_compute_cost():
 
 #test_compute_cost()
 
-x_train=get_images_minibatch(13000, 0)
-y_train=get_labels_minibatch(13000, 0)
+def test_shuffling():
+	X = np.arange(100)
+	Y = np.arange(0,50,2)
+
+	X = np.reshape(X, (5,5,2,2))
+	Y = np.reshape(Y, (5,5))
+
+	new_X, new_Y = shuffle_Y_and_X_synchronous(X,Y,5)
+
+	print(new_X[2], new_Y[2])
+
+# test_shuffling()
+
+y_train=get_labels_as_tensor(13000)
+x_train=get_images_as_tensor(13000)
 
 model(x_train, y_train)

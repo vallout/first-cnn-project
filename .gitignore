@@ -1,4 +1,5 @@
 __pycache__
-test_script.py
-test_script2.py
 *.jpg
+*.ipynb*
+readme.txt
+test_script*.py
